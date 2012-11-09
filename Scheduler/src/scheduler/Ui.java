@@ -41,10 +41,7 @@ import javax.swing.text.BadLocationException;
  * As can be seen the meaning of "Y" in an entry is "AVAILABLE"
  * @author user
  */
-public class Ui extends javax.swing.JFrame {
-    private String holidaysFile = Preferences.HOLIDAYS_FILE;
-    private String assignmentsFile = Preferences.ASSIGNMENTS_FILE;
-    private String scheduleFile = Preferences.SCHEDULE_FILE;    
+public class Ui extends javax.swing.JFrame {   
     /**
      * Creates new form Ui
      */
@@ -64,13 +61,11 @@ public class Ui extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         outputTextArea = new javax.swing.JTextArea();
         displayScheduleButton = new javax.swing.JButton();
-        displayHolidaysButton = new javax.swing.JButton();
         displayTasksButton = new javax.swing.JButton();
         initialiseScheduleButton = new javax.swing.JButton();
         Exit = new javax.swing.JButton();
         calculateScheduleButton = new javax.swing.JButton();
         displayTaskDatesButton = new javax.swing.JButton();
-        consistentButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         setMasterDataMenuItem = new javax.swing.JMenuItem();
@@ -95,13 +90,6 @@ public class Ui extends javax.swing.JFrame {
         displayScheduleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 initialiseScheduleAction(evt);
-            }
-        });
-
-        displayHolidaysButton.setText("Display Schedule");
-        displayHolidaysButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                displayScheduleAction(evt);
             }
         });
 
@@ -138,13 +126,6 @@ public class Ui extends javax.swing.JFrame {
         displayTaskDatesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 displayTaskDatesButtonActionPerformed(evt);
-            }
-        });
-
-        consistentButton.setText("Make Schedule Consistent");
-        consistentButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consistentButtonActionPerformed(evt);
             }
         });
 
@@ -225,13 +206,11 @@ public class Ui extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(displayScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(displayHolidaysButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(displayTasksButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(initialiseScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(calculateScheduleButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(calculateScheduleButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
                     .addComponent(Exit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(displayTaskDatesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(consistentButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(displayTaskDatesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -246,14 +225,10 @@ public class Ui extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(displayTasksButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(displayHolidaysButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(calculateScheduleButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(displayScheduleButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(consistentButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, Short.MAX_VALUE)
                         .addComponent(Exit))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -267,25 +242,26 @@ public class Ui extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void initialiseScheduleAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initialiseScheduleAction
-        Schedule s = new Schedule(Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE));
-        Preferences.addFlex2DArray(Preferences.SCHEDULE_FILE, s.getSchedule());
-    }//GEN-LAST:event_initialiseScheduleAction
-
-    private void displayScheduleAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayScheduleAction
+        Schedule sdb = new Schedule();
+        ScheduleArray s = sdb.getSchedule();
+        s.initialise(sdb.getTaskDates()); //initialise schedule with tasks and dates but no assignments
+        sdb.setSchedule(s);
+        //Display new schedule
         try {
             outputTextArea.replaceRange("",0,outputTextArea.getLineEndOffset(outputTextArea.getLineCount()-1));
-            flex2DArray f = Preferences.retrieveFlex2DArray(scheduleFile);
+            flex2DArray f = s.getSchedule();
             LinkedList<String> L = f.print("|");
-            for (String s : L) outputTextArea.append(s+System.getProperty( "line.separator" ));
+            for (String st : L) {outputTextArea.append(st+System.getProperty( "line.separator" ));}
         } catch (BadLocationException ex) {
             Logger.getLogger(Ui.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_displayScheduleAction
+    }//GEN-LAST:event_initialiseScheduleAction
 
     private void displayHolidaysAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayHolidaysAction
         try {
             outputTextArea.replaceRange("",0,outputTextArea.getLineEndOffset(outputTextArea.getLineCount()-1));
-            flex2DArray f = Preferences.retrieveFlex2DArray(Preferences.HOLIDAYS_FILE);
+            Schedule sdb = new Schedule();
+            flex2DArray f = sdb.getHolidays();
             LinkedList<String> L = f.print("|");
             for (String s : L) outputTextArea.append(s+System.getProperty( "line.separator" ));
         } catch (BadLocationException ex) {
@@ -296,7 +272,8 @@ public class Ui extends javax.swing.JFrame {
     private void displayTasksAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayTasksAction
         try {
             outputTextArea.replaceRange("",0,outputTextArea.getLineEndOffset(outputTextArea.getLineCount()-1));
-            flex2DArray f = Preferences.retrieveFlex2DArray(assignmentsFile);
+            Schedule sdb = new Schedule();
+            flex2DArray f = sdb.getAssignments();
             LinkedList<String> L = f.print("|");
             for (String s : L) outputTextArea.append(s+System.getProperty( "line.separator" ));
         } catch (BadLocationException ex) {
@@ -330,13 +307,14 @@ public class Ui extends javax.swing.JFrame {
     }//GEN-LAST:event_setAssignmentsMenuItemActionPerformed
 
     private void calculateScheduleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateScheduleButtonActionPerformed
-        Schedule s = new Schedule(Preferences.SCHEDULE_FILE);
-        flex2DArray taskDates = Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE);
+        Schedule sdb = new Schedule();
+        ScheduleArray s = sdb.getSchedule();
+        flex2DArray taskDates = sdb.getTaskDates();
         TreeSet<String> dates = taskDates.getColKeys();
         TreeSet<String> tasks = taskDates.getRowKeys();
-        ArrayList<String> people = Preferences.retrieve(Preferences.PEOPLE_FILE);
-        flex2DArray holidays = Preferences.retrieveFlex2DArray(Preferences.HOLIDAYS_FILE);
-        flex2DArray assignments = Preferences.retrieveFlex2DArray(Preferences.ASSIGNMENTS_FILE);
+        ArrayList<String> people = sdb.getPeople();
+        flex2DArray holidays = sdb.getHolidays();
+        flex2DArray assignments = sdb.getAssignments();
         ArrayList<abstractConstraint> constraints = new ArrayList();
         //Add the constraints in the order we want to evaluate them
         constraints.add(0, new taskConstraint(assignments)); // Is person assigned to task
@@ -345,7 +323,16 @@ public class Ui extends javax.swing.JFrame {
         constraints.add(3, new AlreadyScheduledConstraint());//Was person assigned anything else today
         constraints.add(4, new RepeatConstraint()); //Did person do same task recently
         s.calculate(constraints,dates,tasks,people);
-        Preferences.addFlex2DArray(Preferences.SCHEDULE_FILE, s.getSchedule());
+        sdb.setSchedule(s);
+        //Display new schedule
+        try {
+            outputTextArea.replaceRange("",0,outputTextArea.getLineEndOffset(outputTextArea.getLineCount()-1));
+            flex2DArray f = s.getSchedule();
+            LinkedList<String> L = f.print("|");
+            for (String st : L) {outputTextArea.append(st+System.getProperty( "line.separator" ));}
+        } catch (BadLocationException ex) {
+            Logger.getLogger(Ui.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_calculateScheduleButtonActionPerformed
 
     private void setTaskDatesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setTaskDatesMenuItemActionPerformed
@@ -356,17 +343,14 @@ public class Ui extends javax.swing.JFrame {
     private void displayTaskDatesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayTaskDatesButtonActionPerformed
         try {
             outputTextArea.replaceRange("",0,outputTextArea.getLineEndOffset(outputTextArea.getLineCount()-1));
-            flex2DArray f = Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE);
+            Schedule sdb = new Schedule();
+            flex2DArray f = sdb.getTaskDates();
             LinkedList<String> L = f.print("|");
             for (String s : L) outputTextArea.append(s+System.getProperty( "line.separator" ));
         } catch (BadLocationException ex) {
             Logger.getLogger(Ui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_displayTaskDatesButtonActionPerformed
-
-    private void consistentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consistentButtonActionPerformed
-        Preferences.enforceScheduleConsistency();
-    }//GEN-LAST:event_consistentButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -413,9 +397,7 @@ public class Ui extends javax.swing.JFrame {
     private javax.swing.JButton Exit;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JButton calculateScheduleButton;
-    private javax.swing.JButton consistentButton;
     private javax.swing.JMenuItem contentsMenuItem;
-    private javax.swing.JButton displayHolidaysButton;
     private javax.swing.JButton displayScheduleButton;
     private javax.swing.JButton displayTaskDatesButton;
     private javax.swing.JButton displayTasksButton;

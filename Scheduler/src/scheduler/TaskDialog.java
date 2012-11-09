@@ -17,20 +17,17 @@ import javax.swing.JOptionPane;
  * @author user
  */
 public class TaskDialog extends javax.swing.JDialog {
-
+    private flex2DArray taskDates;
+    private Schedule sdb;
     /**
      * Creates new form MasterDataDialog
-     */
-    
-    //private String peopleFile = "people.obj";
-    //private String tasksFile = "tasks.obj";
-    //private String datesFile = "dates.obj";
-    
+     */   
     public TaskDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         // Some application specific initialisations
-        flex2DArray taskDates = Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE);
+        sdb = new Schedule();
+        taskDates = sdb.getTaskDates();
         itemsComboBox.removeAllItems();
         for (String task : taskDates.getRowKeys()){itemsComboBox.addItem(task);}
         addNewTaskTextField.setText("");
@@ -269,7 +266,6 @@ public class TaskDialog extends javax.swing.JDialog {
             itemsComboBox.setSelectedItem(newItem);
             newTask = true;
         }
-        flex2DArray taskDates = Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE);
         //Now look at the dates
         SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
         df.applyPattern("yyyy-MM-dd E"); 
@@ -284,7 +280,7 @@ public class TaskDialog extends javax.swing.JDialog {
             return;
         }
         //If we did select some dates for the task figure out which ones taking into
-        //acount repeated weekly dates etc.
+        //account repeated weekly dates etc.
         String task = (String) itemsComboBox.getSelectedItem();
         if (!repeatsCheckBox.isSelected()){   
             dt = df.format(newDate);
@@ -303,7 +299,6 @@ public class TaskDialog extends javax.swing.JDialog {
             while (cal.before(untilCal)){
                 dt = df.format(cal.getTime());
                 taskDates.add(task, dt, "Y");
-                //Preferences.addFlex2DArray(Preferences.TASK_DATE_FILE, taskDates);
                 datesComboBox.addItem(dt);
                 if (period.equals("Daily")){cal.add(Calendar.DAY_OF_MONTH,interval);}
                 else if (period.equals("Weekly")){cal.add(Calendar.WEEK_OF_YEAR,interval);}
@@ -312,16 +307,10 @@ public class TaskDialog extends javax.swing.JDialog {
                 else {break;}
             }   
         }
-        Preferences.addFlex2DArray(Preferences.TASK_DATE_FILE, taskDates);
-        //Ensure the rest of task dates list reflects any changes ie keep matrix NxM
-        //and not NxMANY
-        flex2DArray td = taskDates.maintainFlex2DArrayConsistency("N");
-        Preferences.addFlex2DArray(Preferences.TASK_DATE_FILE, td);
+        sdb.setTaskDates(taskDates);
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        // TO DO Test it
-        flex2DArray taskDates = Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE);
         //Check a task is selected
         if (itemsComboBox.getSelectedIndex() == -1){
             JOptionPane.showMessageDialog(getContentPane(),"Please select an existing task.");
@@ -338,8 +327,7 @@ public class TaskDialog extends javax.swing.JDialog {
             datesComboBox.removeAllItems();
             itemsComboBox.removeItem(task);
         }
-        flex2DArray td = taskDates.maintainFlex2DArrayConsistency("N");
-        Preferences.addFlex2DArray(Preferences.TASK_DATE_FILE, td);
+        sdb.setTaskDates(taskDates);
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void closeDialogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeDialogButtonActionPerformed
@@ -352,7 +340,6 @@ public class TaskDialog extends javax.swing.JDialog {
 
     private void itemsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemsComboBoxActionPerformed
         datesComboBox.removeAllItems();
-        flex2DArray taskDates = Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE);
         try{
             TreeSet<String> datesAtTask = taskDates.getColKeysForRow((String) itemsComboBox.getSelectedItem(), "Y");
             for (String d : datesAtTask){datesComboBox.addItem(d);}

@@ -4,12 +4,7 @@
  */
 package scheduler;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -22,8 +17,8 @@ public class HolTaskDialog extends javax.swing.JDialog {
     private String Source;
     private String yesNoInd;
     private String reverseYesNoInd;
-    private String seperator = Preferences.SEPERATOR;
-    // TODO Sort out initialise Button - what it initialises flex2DArray or serialised object also.
+    private String seperator;
+    private flex2DArray f; // Holidays or assignments depending on source variable in constructor
     /**
      * Creates new form HolTaskDialog
      * The convention as to what the contents of holidays and assignments mean is
@@ -41,41 +36,41 @@ public class HolTaskDialog extends javax.swing.JDialog {
         this.setTitle(source); //Title
         // Get people, dates and tasks allowed master data
         Source = source;
-        for (String p : (ArrayList<String>) Preferences.retrieve(Preferences.PEOPLE_FILE)) peopleComboBox.addItem(p);
+        Schedule s = new Schedule();
+        for (String p : s.getPeople()) peopleComboBox.addItem(p);
         String objectFile;
-        if (source.equals("Holidays")) {
+        if (Source.equals("Holidays")) {
             yesNoInd = "N"; //Meaning chosen holidays are unavailable to schedule
             reverseYesNoInd = "Y";
         }
-        else if (source.equals("Assignments")) {
+        else if (Source.equals("Assignments")) {
             yesNoInd = "Y"; //Meaning chosen assignments are available to schedule
             reverseYesNoInd = "N";
         }
         // Display people, dates and tasks allowed master data
         DefaultListModel allowedLM = new DefaultListModel();
         allowedList.setModel(allowedLM);
-        flex2DArray taskDates = Preferences.retrieveFlex2DArray(Preferences.TASK_DATE_FILE);
-        if (source.equals("Holidays")){
-            for (String date : taskDates.getColKeys()) allowedLM.addElement(date);
+        if (Source.equals("Holidays")){
+            for (String date : s.getTaskDates().getColKeys()) allowedLM.addElement(date);
         }
         else {
-            for (String task : taskDates.getRowKeys()) allowedLM.addElement(task);
+            for (String task : s.getTaskDates().getRowKeys()) allowedLM.addElement(task);
         }
         //If assignments of holidays/tasks already made, show those
-        if (source.equals("Holidays")) objectFile = Preferences.HOLIDAYS_FILE;
-        else if (source.equals("Assignments")) objectFile = Preferences.ASSIGNMENTS_FILE;
-        else objectFile = Preferences.HOLIDAYS_FILE;
+        if (Source.equals("Holidays")) f = s.getHolidays();
+        else if (source.equals("Assignments")) f = s.getAssignments();
+        else f = s.getHolidays();
         peopleComboBox.setSelectedIndex(0);
         DefaultListModel chosenLM = new DefaultListModel();
         chosenList.setModel(chosenLM);
-        flex2DArray f = (flex2DArray) Preferences.retrieveFlex2DArray(objectFile);
         try{
-            Set<String> s = f.getColKeysForRow((String)peopleComboBox.getSelectedItem(),yesNoInd);
-            for (String p : s) chosenLM.addElement(p);
+            Set<String> st = f.getColKeysForRow((String)peopleComboBox.getSelectedItem(),yesNoInd);
+            for (String p : st) chosenLM.addElement(p);
         }
         catch (NullPointerException e){
             // for (String line : f.print(seperator)) System.out.println();
         }
+        seperator = s.SEPERATOR;
     }
 
     /**
@@ -273,21 +268,7 @@ public class HolTaskDialog extends javax.swing.JDialog {
         
         if (JOptionPane.showConfirmDialog(null, "Are you sure?","Confirm", JOptionPane.YES_NO_OPTION) ==
                 JOptionPane.OK_OPTION) {
-            flex2DArray fl2D;
-            fl2D = initialise(Source);
-            File f;
-            if (Source.equals("Holidays")) f = new File(Preferences.HOLIDAYS_FILE);
-            else if (Source.equals("Assignments")) f = new File(Preferences.ASSIGNMENTS_FILE);
-            else {f = new File(Preferences.HOLIDAYS_FILE);}
-            ObjectOutputStream oos;
-            try {
-                oos = new ObjectOutputStream(new FileOutputStream(f));
-                oos.writeObject(fl2D);
-                oos.close();
-            }
-            catch (IOException e) {
-                System.out.println("Unable to create serialised object");
-            }
+            this.initialise(Source);
             DefaultListModel DLM = new DefaultListModel();
             chosenList.setModel(DLM);
             DLM.clear();
@@ -296,13 +277,8 @@ public class HolTaskDialog extends javax.swing.JDialog {
 
     private void peopleComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peopleComboBoxActionPerformed
         //If assignments of holidays already made, show those
-        String objectFile;
-        if (Source.equals("Holidays")) objectFile = Preferences.HOLIDAYS_FILE;
-        else if (Source.equals("Assignments")) objectFile = Preferences.ASSIGNMENTS_FILE;
-        else objectFile = Preferences.HOLIDAYS_FILE;
         DefaultListModel chosenLM = new DefaultListModel();
         chosenList.setModel(chosenLM);
-        flex2DArray f = (flex2DArray) Preferences.retrieveFlex2DArray(objectFile);
         try{
             Set<String> s = f.getColKeysForRow((String)peopleComboBox.getSelectedItem(),yesNoInd);
             for (String p : s) chosenLM.addElement(p);
@@ -317,49 +293,53 @@ public class HolTaskDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
+        //Deal with the screen, removing selected values
         Object[] L = chosenList.getSelectedValues();
         DefaultListModel LM = (DefaultListModel) chosenList.getModel();
         for (Object O : L) {
             LM.removeElement(O);
         }
+        //Deal with the data storage
         String rowKey = (String) peopleComboBox.getSelectedItem();
+        f.deleteRow(rowKey);
         ArrayList<String> selections = new ArrayList();
         for (int i = 0; i < chosenList.getModel().getSize(); i++) {
-            selections.add((String) chosenList.getModel().getElementAt(i));
+            f.add(rowKey, (String) chosenList.getModel().getElementAt(i), yesNoInd);
         }
-        Preferences.updateRowInFlex2DArray(Source, rowKey, selections, yesNoInd, reverseYesNoInd);
-        Preferences.enforceScheduleConsistency();
+        //Store the new stuff
+        Schedule s = new Schedule();
+        if (Source.equals("Holidays")) s.setHolidays(f);
+        else s.setAssignments(f);
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+            //Deal with the screen, adding selected values
         Object[] L = allowedList.getSelectedValues();
         DefaultListModel LM = (DefaultListModel) chosenList.getModel();
         for (Object O : L) LM.addElement(O);
+        //Deal with the data storage
         String rowKey = (String) peopleComboBox.getSelectedItem();
+        f.deleteRow(rowKey);
         ArrayList<String> selections = new ArrayList();
         for (int i = 0; i < chosenList.getModel().getSize(); i++) {
-            selections.add((String) chosenList.getModel().getElementAt(i));
+            f.add(rowKey,(String) chosenList.getModel().getElementAt(i),yesNoInd);
         }
-        
-        Preferences.updateRowInFlex2DArray(Source, rowKey, selections, yesNoInd, reverseYesNoInd);
-        Preferences.enforceScheduleConsistency();
+        //Store the new stuff        
+        Schedule s = new Schedule();
+        if (Source.equals("Holidays")) s.setHolidays(f);
+        else s.setAssignments(f);
     }//GEN-LAST:event_addButtonActionPerformed
     
-    private flex2DArray initialise(String src){
-        flex2DArray fArray = new flex2DArray();
-        flex2DArray choices = new flex2DArray();
+    private void initialise(String src){
+        Schedule sdb = new Schedule();
         if (src.equals("Holidays")) {
-            choices = Preferences.retrieveFlex2DArray(Preferences.HOLIDAYS_FILE);
+            sdb.initHolidays();
+            f = sdb.getHolidays();
         }
         else if (src.equals("Assignments")) {
-            choices = Preferences.retrieveFlex2DArray(Preferences.ASSIGNMENTS_FILE);
+            sdb.initAssignments();
+            f = sdb.getAssignments();
         }
-        for (String r :choices.getRowKeys()){
-            for (String c : choices.getColKeys()) 
-                if (src.equals("Holidays")){fArray.add(r,c,"Y");} // Default available
-                else if (src.equals("Assignments")) {fArray.add(r,c,"N");} // Default not available
-        }
-        return fArray;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

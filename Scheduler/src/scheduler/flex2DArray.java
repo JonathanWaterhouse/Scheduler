@@ -17,8 +17,7 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
      * and each array element is keyed on 2 strings, one representing the row and
      * the second the column. The implementation s based on linked hash maps and so
      * ordering should remain at that which was initialised. It is assumed that
-     * keys and contents are STRINGS!!
-     *
+     * keys and contents are STRINGS!! 
      */
 
     public flex2DArray (){
@@ -56,7 +55,7 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
      */
     public String getCellContentAtKey(String rowLabel, String colLabel){
         String s = (String) rowsMap.get(rowLabel).get(colLabel);
-        if (s == null){
+        if (s == null){ //Linked hashmap returns null if entry not found
             System.out.println("Unable to find a value for row '"+rowLabel+
                     "' and column '"+colLabel+"'");
         }
@@ -88,7 +87,7 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
      * Made to work with a TableMap in Swing. We want the row key to be displayed
      * in the first column of a JTable
      * @param colIndex int containing coulmun index starting at 0
-     * @return string contaning the column identifier. Blank if column 0.
+     * @return string containing the column identifier. Blank if column 0.
      */
     public String getcolLabelAtIndex(int colIndex){
         Collection<LinkedHashMap> c = rowsMap.values();
@@ -211,9 +210,12 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
      */
     public TreeSet<String> getValuesAtRow(String rowKey){
         Set<String> values = new TreeSet();
-        Collection<String> c = rowsMap.get(rowKey).values();
-        for (String val : c) values.add(val);
-        return (TreeSet<String>) values;
+        try {
+            Collection<String> c = rowsMap.get(rowKey).values();
+            for (String val : c) values.add(val);
+            return (TreeSet<String>) values;
+        }
+        catch (NullPointerException e){return (TreeSet<String>) values;}
     }
     /**
      * Creates and returns an iterator over the elements of the flex2DArray.
@@ -308,7 +310,11 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
          */
         public void remove(){}
     }
-    
+    /*
+     * @param The string character to be used as a field separator in the output
+     * @return a linked list with one line of the flex2DArry and each field
+     * separated by separator
+     */
     public LinkedList<String> print(String seperator){
         LinkedList<String> l = new LinkedList();
         int row = 0, col= 0;
@@ -326,6 +332,10 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
         }
         System.out.println("Max key length : " + lenKey);
         System.out.println("Max data length : " + lenData);
+        if (lenKey == 0) {
+            l.add("No data to display.");
+            return l;
+        }
         // retrieve contents
         String fString = "%"+lenKey.toString()+"s";;
         String header = String.format(fString," " + seperator);
@@ -387,12 +397,11 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
         return out;
     }
     /**
-     * Maintain flex2DArray consistency by ensuring each row has the same keys in the same order
-     * This will be achieved by forcing, at each flex2DArray change, that shorter 
-     * rows have null or other entries filled for column keys introduced in other rows. A side
-     * effect of the algorithm used is that the array keys will be sorted.
+     * Sort flex2DArray by col and row keys. This method's use ensures that we
+     * can rely on each row having its column keys in the same position which is
+     * necessary for the print() method to work properly.
      */
-    public flex2DArray maintainFlex2DArrayConsistency(String dfltEntry){
+    public void sort(){
         flex2DArray copyF2D = new flex2DArray(); //currently no entries
         // Get Total Column Keys across all rows
         TreeSet<String> colKeys = new TreeSet(); //TreeSet is sorted implementation of set 
@@ -411,21 +420,44 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
         for (String rowKey : rowKeys){
             for (String colKey : colKeys){
                 s = (String) this.rowsMap.get(rowKey).get(colKey);
-                if (s == null) {copyF2D.add(rowKey, colKey, dfltEntry);}
+                if (s == null) {copyF2D.add(rowKey, colKey, s);}
                 else {copyF2D.add(rowKey, colKey, s);}
             }
         }
-        //Check for any rows with only default in. We can remove them
-        Set<String> values = new TreeSet();
-        for (String rowKey : rowKeys){
-            if (copyF2D.getColKeysForRow(rowKey,"Y").size() > 0){}
-            else {copyF2D.deleteRow(rowKey);}        
-        }
-        //Check for any cols with only default in. We can remove them
-        for (String colKey : colKeys){
-            if (copyF2D.getRowKeysForCol(colKey,"Y").size() > 0){}
-            else {copyF2D.deleteColumn(colKey);}        
-        }
-        return copyF2D;
+        this.rowsMap = copyF2D.rowsMap;
+        return;
+    }
+    /**
+     * This method is defined to allows us to check if two flex 2DArrays are equal by
+     * content. It overrides the standard Java Object equals method which only 
+     * checks that the object references are the same. Note that this implementation 
+     * does not check the ordering of row key , col key and value tuples.It checks that
+     * row and column lengths are the same, that the set of keys in rows and columns are equal
+     * and that when iterating through col and row keys that the returned values are identical.
+     * @param compareTo Incoming object which will be cast to flex2DArray
+     * @return Boolean true if objects contents match and false if they do not
+     */
+    public boolean equals(Object compareTo){
+       flex2DArray comp = (flex2DArray) compareTo;
+       //check row and col lengths equal
+       if (this.getRowsCount() == comp.getRowsCount() &
+                this.getColsCount()== comp.getColsCount()){
+           //check row and col keys equal
+           //Note that the treeset implementation of "equals" compares contents
+           if(this.getRowKeys().equals(comp.getRowKeys())& 
+                   this.getColKeys().equals(comp.getColKeys())){
+               // the set of keys is equal 
+               for (String row : this.getRowKeys()){
+                   for (String col : this.getColKeys()){
+                       if (!this.getCellContentAtKey(row, col).equals(comp.getCellContentAtKey(row, col))){
+                           return false; //We found an element which is not equal
+                       }
+                   }
+               }
+               return true; //If we got to here all elements are equal
+           }
+           return false;
+       }
+       else return false;
     }
 }

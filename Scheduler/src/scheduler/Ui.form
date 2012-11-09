@@ -109,13 +109,11 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="displayScheduleButton" max="32767" attributes="0"/>
-                  <Component id="displayHolidaysButton" max="32767" attributes="0"/>
                   <Component id="displayTasksButton" max="32767" attributes="0"/>
                   <Component id="initialiseScheduleButton" max="32767" attributes="0"/>
-                  <Component id="calculateScheduleButton" alignment="1" max="32767" attributes="0"/>
+                  <Component id="calculateScheduleButton" alignment="1" pref="157" max="32767" attributes="0"/>
                   <Component id="Exit" alignment="0" max="32767" attributes="0"/>
                   <Component id="displayTaskDatesButton" alignment="0" max="32767" attributes="0"/>
-                  <Component id="consistentButton" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -133,14 +131,10 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="displayTasksButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="displayHolidaysButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="calculateScheduleButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="displayScheduleButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="consistentButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="101" max="32767" attributes="0"/>
+                      <EmptySpace pref="169" max="32767" attributes="0"/>
                       <Component id="Exit" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jScrollPane1" max="32767" attributes="0"/>
@@ -176,14 +170,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="initialiseScheduleAction"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="displayHolidaysButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Display Schedule"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="displayScheduleAction"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="displayTasksButton">
@@ -227,14 +213,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="displayTaskDatesButtonActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="consistentButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Make Schedule Consistent"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="consistentButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
