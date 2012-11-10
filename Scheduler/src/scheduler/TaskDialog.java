@@ -4,13 +4,17 @@
  */
 package scheduler;
 
+import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -28,12 +32,16 @@ public class TaskDialog extends javax.swing.JDialog {
         // Some application specific initialisations
         sdb = new Schedule();
         taskDates = sdb.getTaskDates();
-        itemsComboBox.removeAllItems();
-        for (String task : taskDates.getRowKeys()){itemsComboBox.addItem(task);}
-        addNewTaskTextField.setText("");
+        // Task jTable initialise
+        DefaultTableModel TM = new DefaultTableModel(taskDates.getRowKeys().size()+1,0);
+        TM.addColumn("Tasks", taskDates.getRowKeys().toArray());
+        taskJTable.setModel(TM); 
+        // Dates combo box initialise
         datesComboBox.removeAllItems();
         try{
-            TreeSet<String> datesAtTask = taskDates.getColKeysForRow((String) itemsComboBox.getSelectedItem(), "Y");
+            datesComboBox.removeAllItems();
+            String task = (String) TM.getValueAt(0,0);  
+            TreeSet<String> datesAtTask = taskDates.getColKeysForRow(task, "Y");
             for (String d : datesAtTask){datesComboBox.addItem(d);}
         }
         catch(NullPointerException e){
@@ -53,12 +61,8 @@ public class TaskDialog extends javax.swing.JDialog {
         buttonGroup1 = new javax.swing.ButtonGroup();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jPanel2 = new javax.swing.JPanel();
-        itemsComboBox = new javax.swing.JComboBox();
-        addNewTaskTextField = new javax.swing.JTextField();
-        addButton = new javax.swing.JButton();
-        removeButton = new javax.swing.JButton();
-        AddNewTaskLabel = new javax.swing.JLabel();
-        allCheckBox = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        taskJTable = new javax.swing.JTable();
         datesPanel = new javax.swing.JPanel();
         datesComboBox = new javax.swing.JComboBox();
         dateChooser = new com.toedter.calendar.JDateChooser();
@@ -69,6 +73,10 @@ public class TaskDialog extends javax.swing.JDialog {
         repeatInterval = new javax.swing.JLabel();
         untilDateChooser = new com.toedter.calendar.JDateChooser();
         allLabel = new javax.swing.JLabel();
+        addButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        removeButton = new javax.swing.JButton();
+        allCheckBox = new javax.swing.JCheckBox();
         closeDialogButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -76,70 +84,47 @@ public class TaskDialog extends javax.swing.JDialog {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Task", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
 
-        itemsComboBox.setMaximumRowCount(10);
-        itemsComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemsComboBoxActionPerformed(evt);
+        taskJTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Task"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
             }
         });
-
-        addNewTaskTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+        taskJTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                addNewTaskTextFieldMouseClicked(evt);
+                taskJTableMouseClicked(evt);
             }
         });
-
-        addButton.setText("Add");
-        addButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
+        taskJTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                taskJTableKeyPressed(evt);
             }
         });
-
-        removeButton.setText("Remove");
-        removeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeButtonActionPerformed(evt);
-            }
-        });
-
-        AddNewTaskLabel.setText("Add new task");
-
-        allCheckBox.setText(" All?");
+        jScrollPane1.setViewportView(taskJTable);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(removeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(itemsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(addNewTaskTextField))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(AddNewTaskLabel)
-                    .addComponent(allCheckBox))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 23, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(itemsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addNewTaskTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(AddNewTaskLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(addButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(removeButton)
-                    .addComponent(allCheckBox))
-                .addGap(47, 47, 47))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         datesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Date Selections", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 11))); // NOI18N
@@ -158,33 +143,66 @@ public class TaskDialog extends javax.swing.JDialog {
 
         allLabel.setText("Until");
 
+        addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Add Date(s) for task");
+        jLabel1.setFocusable(false);
+
+        removeButton.setText("Remove");
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeButtonActionPerformed(evt);
+            }
+        });
+
+        allCheckBox.setText(" All Dates?");
+        allCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                allCheckBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout datesPanelLayout = new javax.swing.GroupLayout(datesPanel);
         datesPanel.setLayout(datesPanelLayout);
         datesPanelLayout.setHorizontalGroup(
             datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(datesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(datesPanelLayout.createSequentialGroup()
-                        .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(untilDateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(datesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(14, 14, 14))
-                    .addGroup(datesPanelLayout.createSequentialGroup()
-                        .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(repeatPeriodComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(repeatIntervalComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(repeatsCheckBox)
                     .addGroup(datesPanelLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
+                        .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(datesPanelLayout.createSequentialGroup()
+                                .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(untilDateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(datesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(dateChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(14, 14, 14))
+                            .addGroup(datesPanelLayout.createSequentialGroup()
+                                .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(repeatPeriodComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(repeatIntervalComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)))
                         .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(repeatsEvery)
-                            .addComponent(allLabel)
-                            .addComponent(repeatInterval))))
-                .addContainerGap(56, Short.MAX_VALUE))
+                            .addComponent(repeatsCheckBox)
+                            .addGroup(datesPanelLayout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(repeatsEvery)
+                                    .addComponent(allLabel)
+                                    .addComponent(repeatInterval)))))
+                    .addGroup(datesPanelLayout.createSequentialGroup()
+                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1))
+                    .addGroup(datesPanelLayout.createSequentialGroup()
+                        .addComponent(removeButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(allCheckBox))))
         );
         datesPanelLayout.setVerticalGroup(
             datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,7 +226,15 @@ public class TaskDialog extends javax.swing.JDialog {
                 .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(repeatPeriodComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(repeatInterval))
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addGap(42, 42, 42)
+                .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(datesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(removeButton)
+                    .addComponent(allCheckBox))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         closeDialogButton.setForeground(new java.awt.Color(255, 0, 51));
@@ -225,22 +251,21 @@ public class TaskDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(datesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(closeDialogButton)
-                .addGap(57, 57, 57))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(closeDialogButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(datesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(datesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(datesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeDialogButton)
                 .addContainerGap(16, Short.MAX_VALUE))
@@ -250,73 +275,76 @@ public class TaskDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        //If something in new item text field add it to task combo Box and select it
-        //Otherwise get the task selected 
-        Boolean newTask = false;
-        String newItem = addNewTaskTextField.getText();
-        if (newItem.equals("")){
-            if (itemsComboBox.getSelectedIndex() == -1){
+        // What tasks selected in jTable?
+        ArrayList<String> tasksSelected  = new ArrayList();
+        DefaultTableModel TM = (DefaultTableModel) taskJTable.getModel();
+        int numRows = taskJTable.getSelectedRowCount();
+        int[] rows = new int[numRows];
+        rows = taskJTable.getSelectedRows(); 
+        for (int i = 0; i < numRows; i++) {
+            String task = (String) TM.getValueAt(rows[i],0);
+            tasksSelected.add(task) ;
+        }
+        if (tasksSelected.size() == 0){
                 JOptionPane.showMessageDialog(getContentPane(),"Please select an existing or add a new task.");
                 return;
+        }
+        // Loop over each of selected tasks and set up with the selected dates.
+        for (String task : tasksSelected){
+            if (task == null || task == "") continue;
+             //Now look at the dates
+            SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+            df.applyPattern("yyyy-MM-dd E"); 
+            String dt;
+            Date newDate = dateChooser.getDate();
+            // Did we select any dates? If not output msg to add some
+            try {
+                df.format(newDate);
             }
-            newTask = false; 
-        }
-        else{
-            itemsComboBox.addItem(newItem);
-            itemsComboBox.setSelectedItem(newItem);
-            newTask = true;
-        }
-        //Now look at the dates
-        SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
-        df.applyPattern("yyyy-MM-dd E"); 
-        String dt;
-        Date newDate = dateChooser.getDate();
-        // Did we select any dates? If not output msg to add some
-        try {
-            df.format(newDate);
-        }
-        catch (NullPointerException e){
-            JOptionPane.showMessageDialog(getContentPane(),"Please add date(s) valid for the task.");
-            return;
-        }
-        //If we did select some dates for the task figure out which ones taking into
-        //account repeated weekly dates etc.
-        String task = (String) itemsComboBox.getSelectedItem();
-        if (!repeatsCheckBox.isSelected()){   
-            dt = df.format(newDate);
-            taskDates.add(task, dt, "Y");
-            //Preferences.addFlex2DArray(Preferences.TASK_DATE_FILE, taskDates);
-            datesComboBox.addItem(dt);
-        }
-        else{
-            Date untilDate = untilDateChooser.getDate();
-            Calendar cal = Calendar.getInstance();
-            Calendar untilCal = Calendar.getInstance();
-            cal.setTime(newDate);
-            untilCal.setTime(untilDate);
-            String period = (String) repeatPeriodComboBox.getSelectedItem();
-            int interval = Integer.parseInt((String) repeatIntervalComboBox.getSelectedItem());
-            while (cal.before(untilCal)){
-                dt = df.format(cal.getTime());
+            catch (NullPointerException e){
+                JOptionPane.showMessageDialog(getContentPane(),"Please add date(s) valid for the task.");
+                return;
+            }
+            //If we did select some dates for the task figure out which ones taking into
+            //account repeated weekly dates etc.
+            if (!repeatsCheckBox.isSelected()){   
+                dt = df.format(newDate);
                 taskDates.add(task, dt, "Y");
+                //Preferences.addFlex2DArray(Preferences.TASK_DATE_FILE, taskDates);
                 datesComboBox.addItem(dt);
-                if (period.equals("Daily")){cal.add(Calendar.DAY_OF_MONTH,interval);}
-                else if (period.equals("Weekly")){cal.add(Calendar.WEEK_OF_YEAR,interval);}
-                else if (period.equals("Monthly")){cal.add(Calendar.MONTH,interval);}
-                else if (period.equals("Yearly")){cal.add(Calendar.YEAR,interval);}
-                else {break;}
-            }   
+            }
+            else{
+                Date untilDate = untilDateChooser.getDate();
+                Calendar cal = Calendar.getInstance();
+                Calendar untilCal = Calendar.getInstance();
+                cal.setTime(newDate);
+                untilCal.setTime(untilDate);
+                String period = (String) repeatPeriodComboBox.getSelectedItem();
+                int interval = Integer.parseInt((String) repeatIntervalComboBox.getSelectedItem());
+                while (cal.before(untilCal)){
+                    dt = df.format(cal.getTime());
+                    taskDates.add(task, dt, "Y");
+                    datesComboBox.addItem(dt);
+                    if (period.equals("Daily")){cal.add(Calendar.DAY_OF_MONTH,interval);}
+                    else if (period.equals("Weekly")){cal.add(Calendar.WEEK_OF_YEAR,interval);}
+                    else if (period.equals("Monthly")){cal.add(Calendar.MONTH,interval);}
+                    else if (period.equals("Yearly")){cal.add(Calendar.YEAR,interval);}
+                    else {break;}
+                }   
+            }
+            sdb.setTaskDates(taskDates);           
         }
-        sdb.setTaskDates(taskDates);
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
         //Check a task is selected
-        if (itemsComboBox.getSelectedIndex() == -1){
+        if (taskJTable.getSelectedRow() == -1){
             JOptionPane.showMessageDialog(getContentPane(),"Please select an existing task.");
             return;
         }
-        String task = (String) itemsComboBox.getSelectedItem();
+        String task;
+        DefaultTableModel TM = (DefaultTableModel) taskJTable.getModel();
+        task = (String) TM.getValueAt(taskJTable.getSelectedRow(),0);
         if (!allCheckBox.isSelected()){
             String date = (String) datesComboBox.getSelectedItem();
             taskDates.add(task,date,"N"); //Task on date not available
@@ -325,7 +353,7 @@ public class TaskDialog extends javax.swing.JDialog {
         else{
             taskDates.deleteRow(task); //Task not available on any date
             datesComboBox.removeAllItems();
-            itemsComboBox.removeItem(task);
+            TM.removeRow(taskJTable.getSelectedRow());
         }
         sdb.setTaskDates(taskDates);
     }//GEN-LAST:event_removeButtonActionPerformed
@@ -334,25 +362,44 @@ public class TaskDialog extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_closeDialogButtonActionPerformed
 
-    private void addNewTaskTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addNewTaskTextFieldMouseClicked
-        addNewTaskTextField.setText("");
-    }//GEN-LAST:event_addNewTaskTextFieldMouseClicked
+    private void taskJTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_taskJTableKeyPressed
+       // Add an extra line at the end of the table if enter or Tab keys used
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            DefaultTableModel TM = (DefaultTableModel) taskJTable.getModel();
+            if (taskJTable.getSelectedRowCount() == 1){
+                int maxRow = TM.getRowCount();
+                if (taskJTable.getSelectedRow() == maxRow-1
+                        &TM.getValueAt(maxRow-1, 0) != null){
+                    String A[] = new String[1];
+                    A[0] = "";
+                    TM.addRow(A);                      
+                }  
+            }
+        }
+    }//GEN-LAST:event_taskJTableKeyPressed
 
-    private void itemsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemsComboBoxActionPerformed
-        datesComboBox.removeAllItems();
-        try{
-            TreeSet<String> datesAtTask = taskDates.getColKeysForRow((String) itemsComboBox.getSelectedItem(), "Y");
+    private void taskJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskJTableMouseClicked
+        // TODO add your handling code here:
+        String task;
+        DefaultTableModel TM = (DefaultTableModel) taskJTable.getModel();
+        int i;
+        try {
+            datesComboBox.removeAllItems();
+            task = (String) TM.getValueAt(taskJTable.getSelectedRow(),0);  
+            TreeSet<String> datesAtTask = taskDates.getColKeysForRow(task, "Y");
             for (String d : datesAtTask){datesComboBox.addItem(d);}
         }
         catch(NullPointerException e){
-            //taskDates is not yet initialised so set everything blank
-        }
-    }//GEN-LAST:event_itemsComboBoxActionPerformed
+            //Nothing has been selected
+        }           
+    }//GEN-LAST:event_taskJTableMouseClicked
+
+    private void allCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_allCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel AddNewTaskLabel;
     private javax.swing.JButton addButton;
-    private javax.swing.JTextField addNewTaskTextField;
     private javax.swing.JCheckBox allCheckBox;
     private javax.swing.JLabel allLabel;
     private javax.swing.ButtonGroup buttonGroup1;
@@ -360,15 +407,17 @@ public class TaskDialog extends javax.swing.JDialog {
     private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JComboBox datesComboBox;
     private javax.swing.JPanel datesPanel;
-    private javax.swing.JComboBox itemsComboBox;
     private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton removeButton;
     private javax.swing.JLabel repeatInterval;
     private javax.swing.JComboBox repeatIntervalComboBox;
     private javax.swing.JComboBox repeatPeriodComboBox;
     private javax.swing.JCheckBox repeatsCheckBox;
     private javax.swing.JLabel repeatsEvery;
+    private javax.swing.JTable taskJTable;
     private com.toedter.calendar.JDateChooser untilDateChooser;
     // End of variables declaration//GEN-END:variables
 }

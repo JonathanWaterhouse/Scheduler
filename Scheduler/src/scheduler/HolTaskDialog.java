@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -37,7 +38,11 @@ public class HolTaskDialog extends javax.swing.JDialog {
         // Get people, dates and tasks allowed master data
         Source = source;
         Schedule s = new Schedule();
-        for (String p : s.getPeople()) peopleComboBox.addItem(p);
+        // Set list of people
+        DefaultTableModel TM = new DefaultTableModel(s.getPeople().size(),0);
+        TM.addColumn("", s.getPeople().toArray());
+        personJTable.setModel(TM);
+        //Set some variables for later use
         String objectFile;
         if (Source.equals("Holidays")) {
             yesNoInd = "N"; //Meaning chosen holidays are unavailable to schedule
@@ -47,7 +52,7 @@ public class HolTaskDialog extends javax.swing.JDialog {
             yesNoInd = "Y"; //Meaning chosen assignments are available to schedule
             reverseYesNoInd = "N";
         }
-        // Display people, dates and tasks allowed master data
+        // Display dates and tasks allowed master data
         DefaultListModel allowedLM = new DefaultListModel();
         allowedList.setModel(allowedLM);
         if (Source.equals("Holidays")){
@@ -60,11 +65,10 @@ public class HolTaskDialog extends javax.swing.JDialog {
         if (Source.equals("Holidays")) f = s.getHolidays();
         else if (source.equals("Assignments")) f = s.getAssignments();
         else f = s.getHolidays();
-        peopleComboBox.setSelectedIndex(0);
         DefaultListModel chosenLM = new DefaultListModel();
         chosenList.setModel(chosenLM);
         try{
-            Set<String> st = f.getColKeysForRow((String)peopleComboBox.getSelectedItem(),yesNoInd);
+            Set<String> st = f.getColKeysForRow((String)TM.getValueAt(0, 0),yesNoInd);
             for (String p : st) chosenLM.addElement(p);
         }
         catch (NullPointerException e){
@@ -82,6 +86,8 @@ public class HolTaskDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         allowedLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -93,9 +99,23 @@ public class HolTaskDialog extends javax.swing.JDialog {
         chosenList = new javax.swing.JList();
         chosenLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        peopleComboBox = new javax.swing.JComboBox();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        personJTable = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         initialiseButton = new javax.swing.JButton();
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Holidays and Task Assignments");
@@ -184,27 +204,32 @@ public class HolTaskDialog extends javax.swing.JDialog {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Person"));
 
-        peopleComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                peopleComboBoxActionPerformed(evt);
+        personJTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                ""
+            }
+        ));
+        personJTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                personJTableMouseClicked(evt);
             }
         });
+        jScrollPane4.setViewportView(personJTable);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(peopleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(53, 53, 53)
-                .addComponent(peopleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -223,7 +248,7 @@ public class HolTaskDialog extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(initialiseButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(initialiseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -245,7 +270,7 @@ public class HolTaskDialog extends javax.swing.JDialog {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(22, 22, 22)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,7 +281,7 @@ public class HolTaskDialog extends javax.swing.JDialog {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 18, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -275,19 +300,6 @@ public class HolTaskDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_initialiseButtonActionPerformed
 
-    private void peopleComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peopleComboBoxActionPerformed
-        //If assignments of holidays already made, show those
-        DefaultListModel chosenLM = new DefaultListModel();
-        chosenList.setModel(chosenLM);
-        try{
-            Set<String> s = f.getColKeysForRow((String)peopleComboBox.getSelectedItem(),yesNoInd);
-            for (String p : s) chosenLM.addElement(p);
-        }
-        catch (NullPointerException e){
-            // for (String line : f.print(seperator)) System.out.println();
-        }
-    }//GEN-LAST:event_peopleComboBoxActionPerformed
-
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         this.dispose();
     }//GEN-LAST:event_closeButtonActionPerformed
@@ -300,7 +312,8 @@ public class HolTaskDialog extends javax.swing.JDialog {
             LM.removeElement(O);
         }
         //Deal with the data storage
-        String rowKey = (String) peopleComboBox.getSelectedItem();
+        DefaultTableModel TM = (DefaultTableModel) personJTable.getModel();
+        String rowKey = (String) TM.getValueAt(personJTable.getSelectedRow(),0);
         f.deleteRow(rowKey);
         ArrayList<String> selections = new ArrayList();
         for (int i = 0; i < chosenList.getModel().getSize(); i++) {
@@ -311,24 +324,53 @@ public class HolTaskDialog extends javax.swing.JDialog {
         if (Source.equals("Holidays")) s.setHolidays(f);
         else s.setAssignments(f);
     }//GEN-LAST:event_removeButtonActionPerformed
-
+// Got here
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-            //Deal with the screen, adding selected values
+        //Deal with the selected values
         Object[] L = allowedList.getSelectedValues();
         DefaultListModel LM = (DefaultListModel) chosenList.getModel();
         for (Object O : L) LM.addElement(O);
-        //Deal with the data storage
-        String rowKey = (String) peopleComboBox.getSelectedItem();
-        f.deleteRow(rowKey);
-        ArrayList<String> selections = new ArrayList();
-        for (int i = 0; i < chosenList.getModel().getSize(); i++) {
-            f.add(rowKey,(String) chosenList.getModel().getElementAt(i),yesNoInd);
+        // What people selected in jTable?
+        ArrayList<String> peopleSelected  = new ArrayList();
+        DefaultTableModel TM = (DefaultTableModel) personJTable.getModel();
+        int numRows = personJTable.getSelectedRowCount();
+        int[] rows = new int[numRows];
+        rows = personJTable.getSelectedRows(); 
+        for (int i = 0; i < numRows; i++) {
+            String task = (String) TM.getValueAt(rows[i],0);
+            peopleSelected.add(task) ;
+        }
+        if (peopleSelected.size() == 0){
+                JOptionPane.showMessageDialog(getContentPane(),"Please select an existing or add a new task.");
+                return;
+        }
+        //
+        for (String p : peopleSelected){
+            f.deleteRow(p);
+            ArrayList<String> selections = new ArrayList();
+            for (int i = 0; i < chosenList.getModel().getSize(); i++) {
+                f.add(p,(String) chosenList.getModel().getElementAt(i),yesNoInd);
+            }            
         }
         //Store the new stuff        
         Schedule s = new Schedule();
         if (Source.equals("Holidays")) s.setHolidays(f);
         else s.setAssignments(f);
     }//GEN-LAST:event_addButtonActionPerformed
+
+    private void personJTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_personJTableMouseClicked
+        //If assignments of holidays already made, show those
+        DefaultListModel chosenLM = new DefaultListModel();
+        chosenList.setModel(chosenLM);
+        DefaultTableModel TM = (DefaultTableModel) personJTable.getModel();
+        try{
+            Set<String> s = f.getColKeysForRow((String)TM.getValueAt(personJTable.getSelectedRow(),0),yesNoInd);
+            for (String p : s) chosenLM.addElement(p);
+        }
+        catch (NullPointerException e){
+            // for (String line : f.print(seperator)) System.out.println();
+        }
+    }//GEN-LAST:event_personJTableMouseClicked
     
     private void initialise(String src){
         Schedule sdb = new Schedule();
@@ -355,7 +397,10 @@ public class HolTaskDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JComboBox peopleComboBox;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable personJTable;
     private javax.swing.JButton removeButton;
     // End of variables declaration//GEN-END:variables
 }
