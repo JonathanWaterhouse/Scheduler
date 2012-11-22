@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
@@ -103,17 +103,21 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="480" max="32767" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jScrollPane2" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="displayScheduleButton" max="32767" attributes="0"/>
-                  <Component id="displayTasksButton" max="32767" attributes="0"/>
-                  <Component id="initialiseScheduleButton" max="32767" attributes="0"/>
-                  <Component id="calculateScheduleButton" alignment="1" pref="157" max="32767" attributes="0"/>
-                  <Component id="Exit" alignment="0" max="32767" attributes="0"/>
-                  <Component id="displayTaskDatesButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="changeScheduleJButton" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="displayScheduleJButton" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="calculateScheduleButton" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="displayScheduleButton" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="initialiseScheduleButton" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="displayTasksButton" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="displayTaskDatesButton" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="transposeJCheckBox" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="Exit" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="auditScheduleJButton" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -121,49 +125,32 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Component id="jScrollPane2" alignment="1" pref="391" max="32767" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <Component id="displayTaskDatesButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="displayTaskDatesButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="initialiseScheduleButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="displayTasksButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="calculateScheduleButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="displayScheduleButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="169" max="32767" attributes="0"/>
-                      <Component id="Exit" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="jScrollPane1" max="32767" attributes="0"/>
-              </Group>
+              <Component id="displayTasksButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="initialiseScheduleButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="displayScheduleButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="calculateScheduleButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="displayScheduleJButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="changeScheduleJButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="auditScheduleJButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="transposeJCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="Exit" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-      <AuxValues>
-        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-      </AuxValues>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JTextArea" name="outputTextArea">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="columns" type="int" value="20"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Courier New" size="13" style="0"/>
-            </Property>
-            <Property name="rows" type="int" value="5"/>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Component class="javax.swing.JButton" name="displayScheduleButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Initialise Schedule"/>
@@ -213,6 +200,71 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="displayTaskDatesButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTable" name="outputJTable">
+          <Properties>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+              <Table columnCount="1" rowCount="1">
+                <Column editable="true" title="" type="java.lang.Object"/>
+              </Table>
+            </Property>
+            <Property name="autoResizeMode" type="int" value="0"/>
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+              <TableColumnModel selectionModel="3">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+              </TableColumnModel>
+            </Property>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Default Cursor"/>
+            </Property>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="surrendersFocusOnKeystroke" type="boolean" value="true"/>
+            <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JCheckBox" name="transposeJCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Transpose Output"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="displayScheduleJButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Display Schedule"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="displayScheduleJButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="changeScheduleJButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Change Schedule"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeScheduleJButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="auditScheduleJButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Audit Schedule"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="auditScheduleJButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

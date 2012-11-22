@@ -5,17 +5,9 @@
 package scheduler;
 
 import java.awt.event.KeyEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.text.PlainDocument;
 
 /**
  *

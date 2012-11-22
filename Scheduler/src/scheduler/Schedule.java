@@ -12,12 +12,41 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.TreeSet;
 
 /** 
  * This class stores all the elements required to make a schedule. That includes 
  * people, people task assignments, people holidays and the task date combinations
  * with assignments to people that actually make up the total schedule proper.
+ * 
+ * It has several key components:
+ * A) People 
+ *    Stored as an array list. These should be set up first. This is the default 
+ *    place to go to find which people are in the labour pool
+ * B) Task Dates 
+ *    Stored in a flex2DArray with tasks in the rows and dates in the columns.
+ *    The dates are the dates that the task can be scheduled. The flex2DArray body
+ *    has a "N" meaning that task cannot happen on the date and "Y" otherwise.
+ *    The default value is "N" (ie you have to explicitly assign a task to a date)
+ *    This data is used as the master source of dates and tasks for all other data
+ *    structures.
+ * C) Holidays
+ *    Stored in a flex2DArray with people in the rows and dates in the columns.
+ *    The dates are the dates that the person can be scheduled. The flex2DArray body
+ *    has a "Y" meaning that person is available on the date and "N" otherwise.
+ *    The default value is "Y" ie we assume that a person is not on holiday
+ * D) Assignments
+ *    Stored in a flex2DArray with people in the rows and tasks in the columns.
+ *    The tasks are those that a person can do and have a "Y" in the array body.
+ *    The default setting is that a task cannot be assigned to a person ie "N"
+ * As can be seen the meaning of "Y" in an entry is "AVAILABLE"
+ * E) Schedule 
+ *    Stored as a schedule object which is a flex 2DArray plus some other methods.
+ *    The flex2DArray has row keys task, col keys Date and the contents are the name
+ *    of a person scheduled to do the task. NONE means either the task has no one
+ *    scheduled to do it (eg it was impossible to find anyone and satisfy the 
+ *    constraints or the task is not happening on that day)   
  * 
  * @author Jon Waterhouse
  */
@@ -359,5 +388,47 @@ public class Schedule implements Serializable {
         assignments = f;   
         this.enforceScheduleConsistency();
         this.writeDatabase();
+    }
+    /**
+     * Output some audit results concerning the schedule into a flex2DArray. 
+     * The audit output is a flex2DArray with rows indicating person and columns
+     * indicating task. The cell content for a given person task is a count of
+     * how many times the person was scheduled for the task in the schedule.
+     * @return flex2DArray The output of the audit
+     */
+    public flex2DArray auditSchedule(){
+        flex2DArray auditResults = new flex2DArray();
+        Integer count;
+        //Initialise the audit array with counts of zero
+        TreeSet<String> tasks = schedule.getSchedule().getColKeys();
+        TreeSet<String> dates = schedule.getSchedule().getRowKeys();
+        for (String t : tasks){
+            for (String d : dates){
+                    String person = schedule.getSchedule().getCellContentAtKey(d, t);
+                    auditResults.add(person,t,"0"); // Remember the array stores strings
+            }
+        }
+        //Iterate through the schedule by task and date.
+        for (String t : tasks){
+            for (String d : dates){
+                //At each cell see who is assigned
+                String person = schedule.getSchedule().getCellContentAtKey(d, t);
+                // If a person is assigned to a task increment the count of times assigned by 1
+                try{
+                    count = Integer.parseInt(auditResults.getCellContentAtKey(person, t));
+                }
+                catch (NullPointerException e){
+                    count = 0;
+                }
+                catch (NumberFormatException e){
+                    System.out.println("Task : "+t+ " Date : "+d+" Person : "+person);
+                    System.out.println("Audit result : "+auditResults.getCellContentAtKey(person, t));
+                    count = 0;
+                }
+                auditResults.add(person,t,Integer.toString(count+1));
+            }
+        }
+        auditResults.makeArrayRectangular("0");
+        return auditResults;
     }
 }

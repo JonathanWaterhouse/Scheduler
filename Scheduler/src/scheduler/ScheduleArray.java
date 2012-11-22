@@ -66,6 +66,7 @@ public class ScheduleArray implements Serializable {
                         }
                         else{
                             int randomInt = random.nextInt(inWorkArea.size());
+                            //TO DO Choose the least scheduled of the entries in inWorkArea
                             schedule.add(d,t,inWorkArea.get(randomInt));
                             inWorkArea.clear(); 
                         }
@@ -77,7 +78,7 @@ public class ScheduleArray implements Serializable {
             }
         }
         catch (Exception e){
-            System.out.println("Date = "+ tempdate+"\n" + "Task = "+temptask);
+            System.out.println("ScheduleArray.java: Date = "+ tempdate+"\n" + "Task = "+temptask);
             e.printStackTrace();
         }
         Schedule s = new Schedule();

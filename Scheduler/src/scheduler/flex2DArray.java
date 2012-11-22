@@ -56,23 +56,21 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
     public String getCellContentAtKey(String rowLabel, String colLabel){
         String s = (String) rowsMap.get(rowLabel).get(colLabel);
         if (s == null){ //Linked hashmap returns null if entry not found
-            System.out.println("Unable to find a value for row '"+rowLabel+
-                    "' and column '"+colLabel+"'");
+
         }
         return s;
     }
 
     /**
      * 
-     * @return count of rows in the flex2DArray
+     * @return count of rows in the flex2DArray (not including key)
      */
     public int getRowsCount(){
         return rowsMap.size();
     }
     /**
      * Get Total number of columns
-     * @return Number of columns where first column is the row key so need to add 1
-     * to the length of the LinkedHashMap storing the column values for a given row.
+     * @return Number of columns (not including key).
      */
     public int getColsCount(){
         Collection<LinkedHashMap> c = rowsMap.values();
@@ -81,7 +79,7 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
             len = l.size();
             break; // only need first element to getCellContentAtKey length
         }
-        return len+1;
+        return len;
     }
     /**
      * Made to work with a TableMap in Swing. We want the row key to be displayed
@@ -192,19 +190,27 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
         return (TreeSet<String>) v;
     }
     /**
-     * Return set of values at a particular column of the array
+     * Return set of values at a particular column of the array. Null values will
+     * not be included
      * @param colKey Key of the array column
      * @return TreeSet of values at the particular column of the array
      */
     public TreeSet<String> getValuesAtCol(String colKey){
         Set<String> values = new TreeSet();
-        for (LinkedHashMap<String,String> l : rowsMap.values()){
-            values.add(l.get(colKey));
+        try {
+            for (LinkedHashMap<String,String> l : rowsMap.values()){
+                values.add(l.get(colKey)); 
+            }
         }
+        catch (NullPointerException e){
+            //Cols with null values will throw a NullPointerException Ignore them in 
+            //filling up the returned values Set.
+        }        
         return (TreeSet<String>) values;
     }
     /**
-     * Return set of values at a particular row of the array
+     * Return set of values at a particular row of the array. Null values will 
+     * not be included
      * @param rowKey Key of the array column
      * @return Set of values at the particular row of the array
      */
@@ -215,7 +221,11 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
             for (String val : c) values.add(val);
             return (TreeSet<String>) values;
         }
-        catch (NullPointerException e){return (TreeSet<String>) values;}
+        catch (NullPointerException e){
+            //Rows with null values will throw a NullPointerException Ignore them in 
+            //filling up the returned values Set.
+        }
+        return (TreeSet<String>) values;
     }
     /**
      * Creates and returns an iterator over the elements of the flex2DArray.
@@ -459,5 +469,52 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
            return false;
        }
        else return false;
+    }
+    /**
+     * Transpose a flex2DArray
+     * @return transpose of the flex2DArray that the method is called on
+     */
+    public flex2DArray transpose (){
+        flex2DArray transpose = new flex2DArray();
+        TreeSet<String> newColKeys = this.getRowKeys();
+        TreeSet<String> newRowKeys = this.getColKeys();
+        for (String row : newRowKeys){
+            for (String col : newColKeys){
+                transpose.add(row, col,this.getCellContentAtKey(col, row));
+            }
+        }
+        return transpose;
+    }
+    /**
+     * Return an ArrayList every each value contained
+     * in the elements of a flex2DArray at a specified column 
+     * @Return ArrayList with the list of values
+     */
+    public ArrayList<String> valueOccurrenceCountAtCol(String colKey) {
+        ArrayList<String> valueOccurrences = new ArrayList();
+        //Iterate over rows in the flex2DArray to get the values in cells of the specified column
+        for (LinkedHashMap row : this.rowsMap.values()) {
+            valueOccurrences.add((String)row.get(colKey)); 
+        }
+        return valueOccurrences;
+    } 
+    /**
+     * Routine to make the flex2DArray rectangular by adding default cells where 
+     * no cell has been defined.
+     * @param defaultValue Value to input into any unassigned array elements
+     */
+    public void makeArrayRectangular(String defaultValue){
+        //Are any entries in taskDates, assignments, holidays not assigned
+        //a value? If so assign the default value.
+        String str;
+        for (String t : this.getRowKeys()){
+            for (String d : this.getColKeys()){
+                str = this.getCellContentAtKey(t,d);
+                if (str == null){
+                    this.add(t, d, defaultValue);
+                    continue;
+                }
+            }
+        }     
     }
 }

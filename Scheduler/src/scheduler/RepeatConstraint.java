@@ -20,7 +20,7 @@ public class RepeatConstraint extends abstractConstraint {
     public ArrayList<String> allowed(ArrayList<String> available, String date,
             String task, flex2DArray schedule){
         ArrayList<String> possible = new ArrayList();
-        int earlier = 2;
+        int earlier = 3;
         ArrayList<String> prevValues = new ArrayList();
         prevValues = schedule.getValuesAtEarlierRowsSameColumn(date, task, earlier);
         for (String a : available) {
