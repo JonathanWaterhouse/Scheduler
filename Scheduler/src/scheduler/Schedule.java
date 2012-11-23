@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.TreeSet;
 
 /** 
- * This class stores all the elements required to make a schedule. That includes 
+ * This class stores all the elements required to make a schedule includings 
  * people, people task assignments, people holidays and the task date combinations
  * with assignments to people that actually make up the total schedule proper.
  * 
@@ -167,7 +167,7 @@ public class Schedule implements Serializable {
     }
 
     /**
-     * @param holidays the full schedule array to set
+     * @param schedule the full schedule array to set
      */
     public void setSchedule(ScheduleArray schedule) {
         this.schedule = schedule;

@@ -340,8 +340,6 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
                 if (ccc.length() > lenData) lenData = ccc.length();
             }
         }
-        System.out.println("Max key length : " + lenKey);
-        System.out.println("Max data length : " + lenData);
         if (lenKey == 0) {
             l.add("No data to display.");
             return l;
@@ -488,7 +486,7 @@ public class flex2DArray implements abstractFlex2DArray, Serializable {
     /**
      * Return an ArrayList every each value contained
      * in the elements of a flex2DArray at a specified column 
-     * @Return ArrayList with the list of values
+     * @return ArrayList with the list of values
      */
     public ArrayList<String> valueOccurrenceCountAtCol(String colKey) {
         ArrayList<String> valueOccurrences = new ArrayList();

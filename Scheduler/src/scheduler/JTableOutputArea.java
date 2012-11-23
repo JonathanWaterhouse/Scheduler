@@ -9,7 +9,8 @@ import java.util.TreeSet;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * An implementation of output area which contains the detail of converting the 
+ * internally stored form of schedule components to a JTable.
  * @author user
  */
 public class JTableOutputArea implements OutputArea {

@@ -4,11 +4,17 @@
  */
 package scheduler;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author user
+ * This class creates a Swing dialog which contains a JTable in which the schedule
+ * is displayed that schedule (apart from col 1 which contains row labels) is editable.
+ * It allows a user to input some fixed manual values to an initialised schedule
+ * or change calculated values. For example people may be assigned tasks on a specific
+ * date who are not included within the normal pool of available people.
+ * @author jon.waterhouse@gmail.com
  */
 public class ChangeSchedule extends javax.swing.JDialog {
     private OutputArea output;
@@ -99,19 +105,34 @@ public class ChangeSchedule extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Update the schedule with any changed values. Also keep a record of which
+     * values were changed manually, to be used elsewhere.
+     * @param evt 
+     */
     private void updateJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateJButtonActionPerformed
-        flex2DArray schedule = new flex2DArray();
+        flex2DArray schedule = new flex2DArray(); //For new copy of schedule
+        String d; String t; String p;
         Schedule s = new Schedule(); 
         ScheduleArray sArray = s.getSchedule();
+        flex2DArray oldSchedule = sArray.getSchedule();
+        flex2DArray scheduleChanges = sArray.getScheduleOverride();
         DefaultTableModel TM = (DefaultTableModel) outputJTable.getModel(); 
         for (int i = 0; i < TM.getRowCount(); i++){
             for (int j = 1; j < TM.getColumnCount(); j++){
-                System.out.println(TM.getValueAt(i,j));
-                schedule.add((String)TM.getValueAt(i,0),outputJTable.getColumnName(j),(String)TM.getValueAt(i,j)); 
+                d = (String)TM.getValueAt(i,0);
+                t = outputJTable.getColumnName(j);
+                p = (String)TM.getValueAt(i,j);
+                //Keep a record of what was manually input
+                if (!oldSchedule.getCellContentAtKey(d,t).equals(p)) {
+                    scheduleChanges.add(d,t,"Y");
+                }
+                schedule.add(d,t,p); 
             }
         }
+        scheduleChanges.makeArrayRectangular("N");
         sArray.setSchedule(schedule);
+        sArray.setScheduleOverride(scheduleChanges);
         s.setSchedule(sArray);
     }//GEN-LAST:event_updateJButtonActionPerformed
 
@@ -119,47 +140,7 @@ public class ChangeSchedule extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_exitJButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-   // public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-  //      try {
-  //          for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-  //              if ("Nimbus".equals(info.getName())) {
-  //                  javax.swing.UIManager.setLookAndFeel(info.getClassName());
-  //                  break;
-  //              }
-  //          }
-  //      } catch (ClassNotFoundException ex) {
-  //          java.util.logging.Logger.getLogger(ChangeSchedule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-  //      } catch (InstantiationException ex) {
-  //          java.util.logging.Logger.getLogger(ChangeSchedule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-  //      } catch (IllegalAccessException ex) {
-  //          java.util.logging.Logger.getLogger(ChangeSchedule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-  //      } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-  //          java.util.logging.Logger.getLogger(ChangeSchedule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-  //      }
-        //</editor-fold>
 
-        /* Create and display the dialog */
-   //     java.awt.EventQueue.invokeLater(new Runnable() {
-   //         public void run() {
-   //             ChangeSchedule dialog = new ChangeSchedule(new javax.swing.JFrame(), true);
-   //             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-   //                 @Override
-   //                 public void windowClosing(java.awt.event.WindowEvent e) {
-   //                     System.exit(0);
-   //                 }
-   //             });
-   //             dialog.setVisible(true);
-   //         }
-   //     });
-   // }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton exitJButton;
     private javax.swing.JScrollPane jScrollPane1;

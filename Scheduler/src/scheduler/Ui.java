@@ -58,6 +58,7 @@ public class Ui extends javax.swing.JFrame {
         displayScheduleJButton = new javax.swing.JButton();
         changeScheduleJButton = new javax.swing.JButton();
         auditScheduleJButton = new javax.swing.JButton();
+        initSchedAutoEntriesJButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         setMasterDataMenuItem = new javax.swing.JMenuItem();
@@ -66,7 +67,7 @@ public class Ui extends javax.swing.JFrame {
         setHolidaysMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
-        contentsMenuItem = new javax.swing.JMenuItem();
+        documentationMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -126,6 +127,7 @@ public class Ui extends javax.swing.JFrame {
         outputJTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         outputJTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         outputJTable.setFocusable(false);
+        outputJTable.setRowSelectionAllowed(false);
         outputJTable.setSurrendersFocusOnKeystroke(true);
         outputJTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(outputJTable);
@@ -151,6 +153,13 @@ public class Ui extends javax.swing.JFrame {
         auditScheduleJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 auditScheduleJButtonActionPerformed(evt);
+            }
+        });
+
+        initSchedAutoEntriesJButton.setText("Init Sched Auto Entries");
+        initSchedAutoEntriesJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initSchedAutoEntriesJButtonActionPerformed(evt);
             }
         });
 
@@ -204,9 +213,14 @@ public class Ui extends javax.swing.JFrame {
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
 
-        contentsMenuItem.setMnemonic('c');
-        contentsMenuItem.setText("Contents");
-        helpMenu.add(contentsMenuItem);
+        documentationMenuItem.setMnemonic('c');
+        documentationMenuItem.setText("Documentation");
+        documentationMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                documentationMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(documentationMenuItem);
 
         aboutMenuItem.setMnemonic('a');
         aboutMenuItem.setText("About");
@@ -227,19 +241,20 @@ public class Ui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(changeScheduleJButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(displayScheduleJButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(calculateScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(displayScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(initialiseScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(displayTasksButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(displayTaskDatesButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(transposeJCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(Exit, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(auditScheduleJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(changeScheduleJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(displayScheduleJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(calculateScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(displayScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(initialiseScheduleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(displayTasksButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(displayTaskDatesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(transposeJCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Exit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(auditScheduleJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(initSchedAutoEntriesJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -261,6 +276,8 @@ public class Ui extends javax.swing.JFrame {
                 .addComponent(changeScheduleJButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(auditScheduleJButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(initSchedAutoEntriesJButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(transposeJCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -373,6 +390,28 @@ public class Ui extends javax.swing.JFrame {
         output.print(sdb.auditSchedule());
     }//GEN-LAST:event_auditScheduleJButtonActionPerformed
 
+    private void initSchedAutoEntriesJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initSchedAutoEntriesJButtonActionPerformed
+        Schedule sdb = new Schedule();
+        ScheduleArray s = sdb.getSchedule();
+        flex2DArray sched = s.getSchedule();
+        flex2DArray schedOverride = s.getScheduleOverride();
+        for (String date : sched.getRowKeys()){
+            for (String task : sched.getColKeys()){
+                if (!schedOverride.getCellContentAtKey(date, task).equals("Y"))
+                    sched.add(date, task, "");
+            }
+        }
+        s.setSchedule(sched);
+        sdb.setSchedule(s);
+        //Display new schedule
+        if (transposeJCheckBox.isSelected()) output.print(sdb.getSchedule().getSchedule().transpose());
+        else output.print(sdb.getSchedule().getSchedule());
+    }//GEN-LAST:event_initSchedAutoEntriesJButtonActionPerformed
+
+    private void documentationMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_documentationMenuItemActionPerformed
+        JOptionPane.showMessageDialog(getContentPane(),"Manual available at https://sites.google.com/site/schedulerdocumentation/home");
+    }//GEN-LAST:event_documentationMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -420,14 +459,15 @@ public class Ui extends javax.swing.JFrame {
     private javax.swing.JButton auditScheduleJButton;
     private javax.swing.JButton calculateScheduleButton;
     private javax.swing.JButton changeScheduleJButton;
-    private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JButton displayScheduleButton;
     private javax.swing.JButton displayScheduleJButton;
     private javax.swing.JButton displayTaskDatesButton;
     private javax.swing.JButton displayTasksButton;
+    private javax.swing.JMenuItem documentationMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JButton initSchedAutoEntriesJButton;
     private javax.swing.JButton initialiseScheduleButton;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menuBar;

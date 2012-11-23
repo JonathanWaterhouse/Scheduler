@@ -60,11 +60,14 @@
             <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="contentsMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="documentationMenuItem">
               <Properties>
                 <Property name="mnemonic" type="int" value="99"/>
-                <Property name="text" type="java.lang.String" value="Contents"/>
+                <Property name="text" type="java.lang.String" value="Documentation"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="documentationMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="aboutMenuItem">
               <Properties>
@@ -105,19 +108,20 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" pref="448" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="changeScheduleJButton" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="displayScheduleJButton" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="calculateScheduleButton" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="displayScheduleButton" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="initialiseScheduleButton" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="displayTasksButton" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="displayTaskDatesButton" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="transposeJCheckBox" alignment="0" pref="139" max="32767" attributes="0"/>
-                  <Component id="Exit" alignment="0" pref="139" max="32767" attributes="0"/>
+                  <Component id="changeScheduleJButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="displayScheduleJButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="calculateScheduleButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="displayScheduleButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="initialiseScheduleButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="displayTasksButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="displayTaskDatesButton" alignment="0" max="32767" attributes="0"/>
+                  <Component id="transposeJCheckBox" alignment="0" max="32767" attributes="0"/>
+                  <Component id="Exit" alignment="0" max="32767" attributes="0"/>
                   <Component id="auditScheduleJButton" max="32767" attributes="0"/>
+                  <Component id="initSchedAutoEntriesJButton" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -142,6 +146,8 @@
               <Component id="changeScheduleJButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="auditScheduleJButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="initSchedAutoEntriesJButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="transposeJCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -230,6 +236,7 @@
               <Color id="Default Cursor"/>
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
+            <Property name="rowSelectionAllowed" type="boolean" value="false"/>
             <Property name="surrendersFocusOnKeystroke" type="boolean" value="true"/>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
               <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
@@ -265,6 +272,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="auditScheduleJButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="initSchedAutoEntriesJButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Init Sched Auto Entries"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="initSchedAutoEntriesJButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

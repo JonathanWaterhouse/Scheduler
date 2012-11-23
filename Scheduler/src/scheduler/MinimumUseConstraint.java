@@ -29,7 +29,14 @@ public class MinimumUseConstraint extends abstractConstraint {
         ArrayList<String> peopleUsage = schedule.valueOccurrenceCountAtCol(task);
         String[] pUsage = new String[peopleUsage.size()];
         peopleUsage.toArray(pUsage);
-        Arrays.sort(pUsage); //Get similar values of person listed contiguously
+        try{
+            Arrays.sort(pUsage); //Get similar values of person listed contiguously
+        }
+        catch (NullPointerException e){
+            System.out.println("MinimumUseConstraint.java: date - "+date + " task - "+task);
+            for (String el : pUsage) System.out.println("MinimumUseConstraint.java: pUsage - "+el);
+            e.printStackTrace();
+        }
         peopleUsage.clear();
         for (String el : pUsage) peopleUsage.add(el); //Gives us a sorted list of people already scheduled for the task
         int lowestUsage = 999999999; int finalPos; int usages;

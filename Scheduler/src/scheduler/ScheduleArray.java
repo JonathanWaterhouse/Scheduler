@@ -5,26 +5,33 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeSet;
 
-/**
- *
- * @author jonathan
- */
+     /**
+     * This object represents a schedule ie that object containing dates and events
+     * with assignments of people to them (be aware that this is just one part of
+     * a complete schedule since that contains other elements such as holidays. 
+     * This class contains too an object which indicates whether an entry was a manual 
+     * override. If so it may be required to treat it differently in certain 
+     * circumstances. There are also methods to initialise the schedule and perform 
+     * the calculations to fill the schedule consistent with any constraints.
+     * @author jonathan.waterhouse@gmail.com
+     */
 public class ScheduleArray implements Serializable {
-    /**
-     * Initialises a blank schedule.
-     */ 
+
     private flex2DArray schedule;
+    private flex2DArray scheduleOverride;
     /**
      * creates a new schedule with blank entries and columns keys formed from the
-     * current values of tasks and row keys formed from the current values of dates
+     * current values of tasks and row keys formed from the current values of dates.
+     * Also creates flex2DArray scheduleOverride initialised with every element "N"
      * @param taskDates input values of current tasks and the dates they occur
-     * @return 
      */
     public void initialise (flex2DArray taskDates){
         schedule = new flex2DArray();
+        scheduleOverride = new flex2DArray();
         for(String d : taskDates.getColKeys()){
             for (String e : taskDates.getRowKeys()) {
                 schedule.add(d,e,"");
+                scheduleOverride.add(d,e,"N");
             }
         }
     }
@@ -93,15 +100,28 @@ public class ScheduleArray implements Serializable {
         schedule = schdl;
     }
     /**
+     * Get the flex2DArray containing the indicator as to whether a schedule element
+     * was manually overridden ("Y" = yes, "N" = No)
+     * @return flex2DArray of override indicators
+     */
+    public flex2DArray getScheduleOverride(){
+        return scheduleOverride;
+    }
+    
+    public void setScheduleOverride(flex2DArray schdlOverride){
+        scheduleOverride = schdlOverride;
+    }
+    /**
      * This method is defined to allows us to check if two Schedules are equal by
      * content. It overrides the standard Java Object equals method which only 
      * checks that the object references are the same. 
-     * @param compareTo Incoming object which will be cast to flex2DArray
+     * @param scheduleCompareTo Incoming object which will be cast to scheduleArray
      * @return Boolean true if objects contents match and false if they do not
      */    
-    public boolean equals(Object compareTo){
-        ScheduleArray comp = (ScheduleArray) compareTo;
-        if (schedule.equals(comp.getSchedule())){return true;}
+    public boolean equals(Object scheduleCompareTo){
+        ScheduleArray scheduleComp = (ScheduleArray) scheduleCompareTo;
+        if (schedule.equals(scheduleComp.getSchedule())
+                && scheduleOverride.equals(scheduleComp.getScheduleOverride())){return true;}
         else {return false;}
     }
 }
