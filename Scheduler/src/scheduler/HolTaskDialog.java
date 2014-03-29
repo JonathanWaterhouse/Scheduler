@@ -11,8 +11,16 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author user
+ * Creates new form HolTaskDialog which is used for two purposes 1) to allow assignment
+ * of tasks to people and 2) to allow assignment of people to holidays
+ * The convention as to what the contents of holidays and assignments mean is
+ * set in this module. In both "Y" means available. Thus for holidays we will
+ * display in this dialog entries where the value is "N" since a holiday means 
+ * unavailable for duty. On the other hand the assignments will show entries
+ * with a "Y" in this dialog since the the individual is available for that 
+ * duty. Initialisations will also differ. Holidays will be initiated with
+ * "Y" (default is available), assignments with "N" (Default is unavailable).
+ * @author jonathan.waterhouse@gmail.com
  */
 public class HolTaskDialog extends javax.swing.JDialog {
     private String Source;
@@ -20,15 +28,13 @@ public class HolTaskDialog extends javax.swing.JDialog {
     private String reverseYesNoInd;
     private String seperator;
     private flex2DArray f; // Holidays or assignments depending on source variable in constructor
+
     /**
-     * Creates new form HolTaskDialog
-     * The convention as to what the contents of holidays and assignments mean is
-     * set in this module. In both "Y" means available. Thus for holidays we will
-     * display in this dialog entries where the value is "N" since a holiday means 
-     * unavailable for duty. On the other hand the assignments will show entries
-     * with a "Y" in this dialog since the the individual is available for that 
-     * duty. Initialisations will also differ. Holidays will be initiated with
-     * "Y" (default is available), assignments with "N" (Default is unavailable).
+     * Display the dialog in its initial state.
+     * @param parent the main gui element from which the dialog is started
+     * @param modal is the dialog box modal or not
+     * @param source String denoting whether we are displaying task or holiday 
+     * assignments
      */
     public HolTaskDialog(java.awt.Frame parent, boolean modal,String source) {
         super(parent, modal);

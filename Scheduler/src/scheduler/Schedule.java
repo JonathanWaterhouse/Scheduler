@@ -126,6 +126,14 @@ public class Schedule implements Serializable {
         this.enforceScheduleConsistency();
         this.writeDatabase();
     }
+    
+    public TreeSet getTasks(){
+        return taskDates.getRowKeys();
+    }
+    
+    public TreeSet getDates(){
+        return taskDates.getColKeys();
+    }
 
     /**
      * @return the assignments
@@ -143,6 +151,15 @@ public class Schedule implements Serializable {
         this.writeDatabase();
     }
 
+    public void initialiseHolidays(ArrayList<String> people, ArrayList<String> dates){
+        for (String p : people){
+            for (String d : dates){
+                this.holidays.add(p,d,"Y");
+            }
+        }
+        this.enforceScheduleConsistency();
+        this.writeDatabase();
+    }
     /**
      * @return the holidays
      */
@@ -159,7 +176,7 @@ public class Schedule implements Serializable {
         this.writeDatabase();
     }
 
-        /**
+     /**
      * @return the holidays
      */
     public ScheduleArray getSchedule() {

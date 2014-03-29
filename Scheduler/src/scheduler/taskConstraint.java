@@ -7,19 +7,23 @@ package scheduler;
 import java.util.ArrayList;
 
 /**
- *
- * @author user
+ * Implements abstractConstraint with code that ensures that the person is actually
+ * available for this task.
+ * @author jonathan.waterhouse@gmail.com
  */
 public class taskConstraint extends abstractConstraint {
     private flex2DArray assignments;
     public taskConstraint(flex2DArray assignments){
         this.assignments = assignments;
     }
+    
     /**
-     * from a list of input possible people decide from the constraint which people 
-     * to remove from the list
-     * @param available the incoming ArrayList of possible people
-     * @return possible ArrayList of those still possible after the constraint is applied.
+     * @param available incoming ArrayList of possible people for the schedule slot
+     * @param date schedule slot date
+     * @param task schedule slot task
+     * @param schedule the incoming schedule flex2DArray
+     * @return outgoing array list of possible people for schedule slot after the 
+     * constraint has been checked. This is not a reference copy but rather a deep copy.
      */
     public ArrayList<String> allowed(ArrayList<String> available, String date,
             String task, flex2DArray schedule){

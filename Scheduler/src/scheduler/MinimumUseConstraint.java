@@ -9,8 +9,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- *
- * @author user
+ * Implements abstractConstraint with code that ensures that we minimise the useage
+ * of people in the schedule. It checks how many times each people was currently on this task
+ * and then outputs only those from the incoming possible ArrayList those who were 
+ * used least. 
+ * BEWARE: This objects allowed() implementation assumes a maximum number of task
+ * occurrences for a person in the schedule period of 999999999.
+ * @author jonathan.waterhouse@gmail.com
  */
 public class MinimumUseConstraint extends abstractConstraint {
     /**

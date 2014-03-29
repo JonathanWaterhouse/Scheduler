@@ -10,8 +10,9 @@ import java.util.logging.Logger;
 import javax.swing.text.BadLocationException;
 
 /**
- *
- * @author Jon Waterhouse
+ * An implementation of output area which contains the detail of converting the 
+ * internally stored form of schedule components to a JTextArea.
+ * @author jonathan.waterhouse@gmail.com
  */
 public class JTextAreaOutput implements OutputArea {
     

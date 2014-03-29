@@ -1,14 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package scheduler;
 
 import java.util.ArrayList;
 
 /**
- *
- * @author user
+ * Implements abstractConstraint with code that ensures that the same person was
+ * not scheduled on the same task in the last three scheduled occurrences of the 
+ * event.
+ * @author jonathan.waterhouse@gmail.com
  */
 public class RepeatConstraint extends abstractConstraint {
     /**

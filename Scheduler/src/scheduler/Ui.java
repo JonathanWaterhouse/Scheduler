@@ -4,19 +4,32 @@
  */
 package scheduler;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 
 /**
- * This Program sets up and calculates the contents of a schedule using schedule
- * constraints specified (such as person cannot be scheduled when on holiday, 
- * person can be scheduled when assigned to a task, person cannot be scheduled
- * too often.
+ * This Program sets up a gui for a scheduling program - from it all components
+ * of the schedule may be initialised and the schedule calculated and
+ * manipulated - Apart from various menu items and screen buttons used to
+ * perform the prior tasks, the main output area for display of data is defined 
+ * by interface OutputArea this is instantiated in the constructor as a specific 
+ * object which implements the interface and is defined according to the nature 
+ * of the output area component which is part of Ui. 
  * 
 
  * @author Jon Waterhouse
@@ -26,7 +39,7 @@ public class Ui extends javax.swing.JFrame {
      * output is defined as interface OutputArea and is instantiated in the 
      * constructor as a specific object which implements the interface and is 
      * defined according to the nature of the output area component which is part
-     * of Ui.
+     * of Ui. The current UI output area is a JTable.
      */
     private OutputArea output;
     /**
@@ -65,6 +78,8 @@ public class Ui extends javax.swing.JFrame {
         setTaskDatesMenuItem = new javax.swing.JMenuItem();
         setAssignmentsMenuItem = new javax.swing.JMenuItem();
         setHolidaysMenuItem = new javax.swing.JMenuItem();
+        exportMenuItem = new javax.swing.JMenuItem();
+        importMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         documentationMenuItem = new javax.swing.JMenuItem();
@@ -175,6 +190,7 @@ public class Ui extends javax.swing.JFrame {
         });
         fileMenu.add(setMasterDataMenuItem);
 
+        setTaskDatesMenuItem.setMnemonic('d');
         setTaskDatesMenuItem.setText("Set Task Dates");
         setTaskDatesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -183,6 +199,7 @@ public class Ui extends javax.swing.JFrame {
         });
         fileMenu.add(setTaskDatesMenuItem);
 
+        setAssignmentsMenuItem.setMnemonic('a');
         setAssignmentsMenuItem.setLabel("Set Assignments");
         setAssignmentsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -191,6 +208,7 @@ public class Ui extends javax.swing.JFrame {
         });
         fileMenu.add(setAssignmentsMenuItem);
 
+        setHolidaysMenuItem.setMnemonic('H');
         setHolidaysMenuItem.setLabel("Set Holidays");
         setHolidaysMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -198,6 +216,24 @@ public class Ui extends javax.swing.JFrame {
             }
         });
         fileMenu.add(setHolidaysMenuItem);
+
+        exportMenuItem.setMnemonic('E');
+        exportMenuItem.setText("Export Schedule");
+        exportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exportMenuItem);
+
+        importMenuItem.setMnemonic('I');
+        importMenuItem.setText("Import Schedule");
+        importMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(importMenuItem);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
@@ -241,7 +277,7 @@ public class Ui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 692, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(changeScheduleJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -259,7 +295,7 @@ public class Ui extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(displayTaskDatesButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -342,8 +378,8 @@ public class Ui extends javax.swing.JFrame {
         Schedule sdb = new Schedule();
         ScheduleArray s = sdb.getSchedule();
         flex2DArray taskDates = sdb.getTaskDates();
-        TreeSet<String> dates = taskDates.getColKeys();
-        TreeSet<String> tasks = taskDates.getRowKeys();
+        TreeSet<String> dates = sdb.getDates();
+        TreeSet<String> tasks = sdb.getTasks();
         ArrayList<String> people = sdb.getPeople();
         flex2DArray holidays = sdb.getHolidays();
         flex2DArray assignments = sdb.getAssignments();
@@ -412,6 +448,82 @@ public class Ui extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(getContentPane(),"Manual available at https://sites.google.com/site/schedulerdocumentation/home");
     }//GEN-LAST:event_documentationMenuItemActionPerformed
 
+    private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuItemActionPerformed
+        Schedule sdb = new Schedule();
+        flex2DArray export = sdb.getSchedule().getSchedule();
+        Writer writer = null;
+        //Choose where we want the file
+        String dataDir = "C:\\";
+	JFileChooser dir = new JFileChooser();
+	dir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        dir.setDialogTitle("Choose a folder to export to.....");
+	int rc = dir.showOpenDialog(this);
+	if (rc == JFileChooser.APPROVE_OPTION){
+            File file = dir.getSelectedFile();
+            dataDir = file.getAbsolutePath();
+            System.out.println(dataDir);
+	}	
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(dataDir  + "\\Schedule.txt"), "utf-8"));
+            for (String el : export.print(String.valueOf("\t"))){
+                writer.write(el + '\n');
+            }
+        } catch (IOException ex) {
+        // report
+        } finally {
+            try {writer.close();} catch (Exception ex) {}
+        }
+    }//GEN-LAST:event_exportMenuItemActionPerformed
+
+    private void importMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMenuItemActionPerformed
+        Object[] options = { "OK", "CANCEL" };
+        Integer result = JOptionPane.showConfirmDialog(this,
+            "This option is in BETA. \n"
+                + "This option will completely overwrite your current schedule. "
+                + "\nDo you want to continue?", "Warning",
+            JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION){
+            //Choose where we want to get the file from
+            String dataFile = "C:\\";
+            JFileChooser dir = new JFileChooser();
+            dir.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            dir.setDialogTitle("Choose a file containing your schedule.....");
+            int rc = dir.showOpenDialog(this);
+            if (rc == JFileChooser.APPROVE_OPTION){
+                File file = dir.getSelectedFile();
+                dataFile = file.getAbsolutePath();
+            }
+            //Read the file indicated
+            ImportSchedule impSched;
+            try{
+                impSched = new ImportSchedule(dataFile);
+                String message = impSched.audit();
+                int n = JOptionPane.showConfirmDialog(this,
+                    message,
+                    "Data Input Audit",
+                    JOptionPane.YES_NO_OPTION);
+                if (n == JOptionPane.YES_OPTION){
+                    System.out.println("YES!");
+                    impSched.setSchedule();
+                }
+            }
+            catch (FileNotFoundException ex){
+                JOptionPane.showMessageDialog(this,
+                    "Cannot find the schedule file selected.",
+                    "Import error",
+                    JOptionPane.ERROR_MESSAGE);
+            } 
+            catch (IOException ex){
+                JOptionPane.showMessageDialog(this,
+                    "The schedule file you are trying to import is corrupt.",
+                    "Import error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else{}
+    }//GEN-LAST:event_importMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -465,8 +577,10 @@ public class Ui extends javax.swing.JFrame {
     private javax.swing.JButton displayTasksButton;
     private javax.swing.JMenuItem documentationMenuItem;
     private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenuItem exportMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JButton initSchedAutoEntriesJButton;
     private javax.swing.JButton initialiseScheduleButton;
     private javax.swing.JScrollPane jScrollPane2;

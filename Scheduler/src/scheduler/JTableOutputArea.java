@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package scheduler;
 
 import java.util.TreeMap;
@@ -11,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
 /**
  * An implementation of output area which contains the detail of converting the 
  * internally stored form of schedule components to a JTable.
- * @author user
+ * @author jonathan.waterhouse@gmail.com
  */
 public class JTableOutputArea implements OutputArea {
     

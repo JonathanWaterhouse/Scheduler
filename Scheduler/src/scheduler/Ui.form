@@ -21,6 +21,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="setTaskDatesMenuItem">
               <Properties>
+                <Property name="mnemonic" type="int" value="100"/>
                 <Property name="text" type="java.lang.String" value="Set Task Dates"/>
               </Properties>
               <Events>
@@ -29,6 +30,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="setAssignmentsMenuItem">
               <Properties>
+                <Property name="mnemonic" type="int" value="97"/>
                 <Property name="label" type="java.lang.String" value="Set Assignments"/>
               </Properties>
               <Events>
@@ -37,10 +39,29 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="setHolidaysMenuItem">
               <Properties>
+                <Property name="mnemonic" type="int" value="72"/>
                 <Property name="label" type="java.lang.String" value="Set Holidays"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="setHolidaysMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="exportMenuItem">
+              <Properties>
+                <Property name="mnemonic" type="int" value="69"/>
+                <Property name="text" type="java.lang.String" value="Export Schedule"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="importMenuItem">
+              <Properties>
+                <Property name="mnemonic" type="int" value="73"/>
+                <Property name="text" type="java.lang.String" value="Import Schedule"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="importMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
@@ -90,6 +111,7 @@
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -108,7 +130,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" pref="448" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" pref="692" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="changeScheduleJButton" alignment="0" max="32767" attributes="0"/>
@@ -129,7 +151,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jScrollPane2" alignment="1" pref="391" max="32767" attributes="0"/>
+          <Component id="jScrollPane2" alignment="1" pref="540" max="32767" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">
               <Component id="displayTaskDatesButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>

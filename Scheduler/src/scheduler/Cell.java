@@ -1,8 +1,9 @@
 package scheduler;
 
 /**
- *
- * @author U104675
+ * This object represents the basic unit of the flex2DArray the cell which consists
+ * of row and column keys and a content.
+ * @author jonathan.waterhouse@gmail.com
  */
 public class Cell {
 /**

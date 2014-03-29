@@ -10,8 +10,8 @@ import java.util.Arrays;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author user
+ * Creates a dialog to allow the input of people able to be used in the schedule
+ * @author jonathan.waterhouse@gmail.com
  */
 public class PeopleDialog extends javax.swing.JDialog {
     private ArrayList<String> people;
